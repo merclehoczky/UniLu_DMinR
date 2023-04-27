@@ -19,4 +19,10 @@ access_token <- get_spotify_access_token()
 # Ask for user id
 my_id <- rstudioapi::askForPassword(prompt = "Please enter your user ID")
 
+# Scrape playlists from user
+my_plists <- get_user_playlists(my_id, limit = 50)
+
+# Enter playlist name
+plist <- rstudioapi::askForPassword(prompt = "Please choose your playlist")
+
 
