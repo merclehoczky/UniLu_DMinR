@@ -13,5 +13,3 @@ types <- "restaurant"  # Restrict results to restaurants
 query = "Italian restaurants"
 next_page_token <- ""
 
-# Initialize empty list to hold results
-results <- list()
