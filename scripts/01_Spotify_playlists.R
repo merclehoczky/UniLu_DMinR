@@ -34,4 +34,11 @@ for (i in 1:length(my_plists)) {
 }
 
 
+# Get all the tracks from the playlist
+playlist_tracks <- get_playlist_tracks(playlist_id)
 
+# Get the length of the playlists
+playlist_length_sec <- sum(playlist_tracks$track.duration_ms)/1000
+
+#Save value mm:ss time format
+pl_length_in_minsec <- format( as.POSIXct(Sys.Date())+playlist_length_sec/1000, "%M:%S")
