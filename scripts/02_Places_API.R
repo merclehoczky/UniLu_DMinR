@@ -13,3 +13,24 @@ types <- "restaurant"  # Restrict results to restaurants
 query = "Italian restaurants"
 next_page_token <- ""
 
+# Initialize empty list to hold results
+results <- list()
+
+# Construct API request URL
+url <- sprintf("https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=%s&location=%s&radius=%d&types=%s&pagetoken=%s",
+               api_key, 
+               location, 
+               radius, 
+               types,  
+               next_page_token
+)
+
+# Send GET request to API
+response <- GET(url)
+
+# Parse JSON response
+content <- content(response, as = "text", encoding = "UTF-8")
+data <- fromJSON(content, flatten = TRUE)
+
+# Add results to list
+results <- c(results, data$results)
