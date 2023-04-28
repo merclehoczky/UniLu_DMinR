@@ -13,6 +13,7 @@ client_id <- keys$api_key[1]
 client_secret <- keys$api_key[2]
 authorization_header <- NULL
 redirect_uri <- "http://localhost:1410/"
+user_id <- keys$api_key[3]
 
 Sys.setenv(SPOTIFY_CLIENT_ID = client_id)
 Sys.setenv(SPOTIFY_CLIENT_SECRET = client_secret)
@@ -20,7 +21,7 @@ Sys.setenv(SPOTIFY_CLIENT_SECRET = client_secret)
 access_token <- get_spotify_access_token()
 
 # Google keys
-api_key <- keys$api_key[3]
+api_key <- keys$api_key[4]
 Sys.setenv(GU_API_KEY = api_key) 
 
 #### UI ----
@@ -43,11 +44,20 @@ ui <- fluidPage(
   )
 )
 
+
+
 #### Server ----
 server <- function(input, output, session) {
   
+  # Reactive function to input user id
+  dataInput <- reactive({
+   textInput(input$user_id, 
+               auto.assign = FALSE)
+  })
   # Function to get user's Spotify playlists
-  get_playlists <- get_user_playlists(user_id, limit = 50)
+  get_playlists <- reactive({
+    get_user_playlists(user_id, limit = 50)
+ })
   
   
   # Function to get the length of a Spotify playlist
