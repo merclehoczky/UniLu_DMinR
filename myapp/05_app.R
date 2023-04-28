@@ -37,3 +37,57 @@ ui <- fluidPage(
     )
   )
 )
+
+#### Server ----
+server <- function(input, output, session) {
+  
+  # Function to get user's Spotify playlists
+  get_playlists <- get_user_playlists(user_id, limit = 50)
+  
+  
+  # Function to get the length of a Spotify playlist
+  get_playlist_length <- function(playlist_id) {
+    playlist_tracks <- get_playlist_tracks(playlist_id)
+    playlist_length  <- sum(playlist_tracks$track.duration_ms)/1000
+    return(playlist_length)
+  }
+  
+  
+  # Event trigger for playlist selection
+  output$playlist_selector <- renderUI({
+    playlists  <- get_user_playlists(input$spotify_id, limit = 50)
+    playlist_names <- playlists$name
+    selectInput("selected_playlist", "Select a playlist:", choices = playlist_names)
+  })
+  
+  # Event trigger for playlist length calculation
+  playlist_length <- reactive({
+    playlist_id <- playlists[grep(input$selected_playlist, sapply(playlists, function(p) p$name))[[1]]]$id
+    playlist_length <- get_playlist_length(playlist_id)
+    
+    return(playlist_length)
+  })
+  
+  # Output for playlist length calculation
+  output$playlist_length <- renderText({
+    paste0("Length of ", input$selected_playlist, " playlist: ", playlist_length(), " sec")
+  })
+  
+  # Event trigger for restaurant times calculation
+  restaurant_times <- reactive({
+    
+    data.frame(Restaurant = places$place_name, Route_Time = places$route_times_sec)
+  })
+  
+  
+  # Output for restaurant times calculation
+  output$restaurant_times <- renderDataTable({
+    restaurant_times()
+  })
+  
+}
+
+
+#### Run the app ----
+shinyApp(ui, server)
+
