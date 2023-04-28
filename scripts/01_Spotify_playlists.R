@@ -37,15 +37,12 @@ for (i in 1:length(my_plists)) {
   })
 }
 
-
-
-
-
 # Enter playlist name
 plist <- rstudioapi::askForPassword(prompt = "Please choose your playlist")
 
 # Get the ID of the playlist with the specified name
 playlist_id
+plist
 for (i in 1:length(my_plists)) {
   if(plist == my_plists$name[i] ){
     playlist_id <- my_plists$id[i]
@@ -55,9 +52,21 @@ for (i in 1:length(my_plists)) {
 
 # Get all the tracks from the playlist
 playlist_tracks <- get_playlist_tracks(playlist_id)
+playlist_tracks <- tryCatch(
+  expr = get_playlist_tracks(playlist_id),
+  error = function(e) {
+    message("Error getting tracks for playlist ", plist, ": ", e$message)
+    return(NULL)
+  }
+)
 
-# Get the length of the playlists
-playlist_length_sec <- sum(playlist_tracks$track.duration_ms)/1000
+if (!is.null(playlist_tracks)) {
+  # Get the length of the playlists
+  playlist_length_sec <- sum(playlist_tracks$track.duration_ms)/1000
 
-#Save value mm:ss time format
-pl_length_in_minsec <- format( as.POSIXct(Sys.Date())+playlist_length_sec/1000, "%M:%S")
+  #Save value mm:ss time format
+  pl_length_in_minsec <- format( as.POSIXct(Sys.Date())+playlist_length_sec/1000, "%M:%S")
+} else {
+  print("Not available")
+  
+}
