@@ -6,4 +6,5 @@ idx <- which.min(diffs)
 
 # Print closest value
 closest_val <- places$route_times_sec[idx]
-print(closest_val)
+placename <- places$place_name[idx]
+print(c(closest_val, placename))
