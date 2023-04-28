@@ -25,15 +25,20 @@ Sys.setenv(GU_API_KEY = api_key)
 
 #### UI ----
 ui <- fluidPage(
-  titlePanel("Spotify Playlist Analyzer"),
+  titlePanel("Spotify Playlist Matcher"),
   sidebarLayout(
     sidebarPanel(
-      textInput("spotify_id", "Enter your Spotify ID:", value = ""),
-      uiOutput("playlist_selector")
+      textInput("user_id", "Spotify User ID:"),
+      actionButton("get_playlists", "Get User's Playlists"),
+      br(),
+      br(),
+      selectInput("playlist_id", "Select Playlist:", choices = NULL),
+      actionButton("match_playlist", "Match Playlist to Closest Route"),
+      br(),
+      textOutput("closest_match")
     ),
     mainPanel(
-      textOutput("playlist_length"),
-      dataTableOutput("restaurant_times")
+      tableOutput("playlist_table")
     )
   )
 )
