@@ -22,3 +22,18 @@ access_token <- get_spotify_access_token()
 # Google keys
 api_key <- keys$api_key[3]
 Sys.setenv(GU_API_KEY = api_key) 
+
+#### UI ----
+ui <- fluidPage(
+  titlePanel("Spotify Playlist Analyzer"),
+  sidebarLayout(
+    sidebarPanel(
+      textInput("spotify_id", "Enter your Spotify ID:", value = ""),
+      uiOutput("playlist_selector")
+    ),
+    mainPanel(
+      textOutput("playlist_length"),
+      dataTableOutput("restaurant_times")
+    )
+  )
+)
