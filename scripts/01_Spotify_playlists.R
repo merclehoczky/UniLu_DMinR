@@ -25,13 +25,19 @@ my_plists <- get_user_playlists(my_id, limit = 50)
 # Get all the tracks AND LENGTHS from ALL the playlists
 my_plists$playlist_length_sec <- NA
 for (i in 1:length(my_plists)) {
-  if(my_plists$owner.display_name[i] == "Spotify" | my_plists$owner.id[i] != "my_id"){
-    next
-  }
   tryCatch({
     temp <- get_playlist_tracks(my_plists$id[i])
-    my_plists$playlist_length_sec[i] <- sum(temp$track.duration_ms)/1000 })
-  }
+    my_plists$playlist_length_sec[i] <- sum(temp$track.duration_ms)/1000
+  }, error = function(e) {
+    if (inherits(e, "SpotifyError") && e$status == 404) {
+      message(paste("Skipping playlist", my_plists$name[i], "because it is not found."))
+    } else {
+      message(paste("Error in getting tracks for playlist", my_plists$name[i], ": ", e$message))
+    }
+  })
+}
+
+
 
 
 
