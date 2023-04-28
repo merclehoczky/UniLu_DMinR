@@ -25,7 +25,7 @@ Sys.setenv(GU_API_KEY = api_key)
 
 #### UI ----
 ui <- fluidPage(
-  titlePanel("Spotify Playlist Matcher"),
+  titlePanel("Where to eat today?"),
   sidebarLayout(
     sidebarPanel(
       textInput("user_id", "Spotify User ID:"),
