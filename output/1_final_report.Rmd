@@ -1,0 +1,62 @@
+---
+title: "Walk_aurant_ify"
+author: "MercedeszLehoczky"
+date: "2023-04-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This project is the final capstone project for the University of Lucerne FS23 "Data Mining in R" course.
+The purpose of this project was to gain insights into data mining methods and to create an original project using the freshly learned skills.
+
+
+## Idea
+The project is meant to be an idea for a "self-care" walk. 
+The user would access their Spotify account, choose a playlist, and the project matches the length of their playlist to a restaurant in Lucerne. The starting point is always the University of Lucerne and the route is calculated via walking.
+
+For this, Spotify API, Google Places API and Google Directions API are used.
+
+
+##Initialisation
+
+From the user end, the user needs to create a Spotify app on <https://developer.spotify.com/> and have their "Client ID" and "Client secret" ready.
+Furthermore, their Spotify User ID will also be needed.
+
+For Google API, get an API key from <https://developers.google.com/maps/>. 
+Kindly consult the documentations for more precise information.
+
+The scripts ask for the keys password-style, however, it is recommended to create a "keys.csv" file in the "data" folder to store these keys for the shiny application. The format is the following:
+api_id            | api_key
+spotify_id        | xxx         #client ID
+spotify_secret    | xxx         #client secret
+spotify_user      | xxx         #user ID
+google_id         | xxx         #Google API key
+
+
+
+### Let's see the playlists
+
+After initialisation, the first script ("01_Spotify_playlists.R") is ran and the first important output is the names of playlists scraped.
+
+There are issues with the functions used here. In the package "spotifyr", there are multiple great tools, but the function "get_user_playlists" is limited to 50 playlists, usually displaved as youngest release to oldest.
+
+Another issue is, that not all playlists are available for scraping their length. This could be because of the playlist not being public or being owned by someone else.
+
+```{r}
+print(my_plists$name)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
