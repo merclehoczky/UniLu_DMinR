@@ -1,0 +1,100 @@
+---
+title: "Walk_aurant_ify"
+author: "MercedeszLehoczky"
+date: "2023-04-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This project is the final capstone project for the University of Lucerne FS23 "Data Mining in R" course.
+The purpose of this project was to gain insights into data mining methods and to create an original project using the freshly learned skills.
+
+
+## Idea
+The project is meant to be an idea for a "self-care" walk. 
+The user would access their Spotify account, choose a playlist, and the project matches the length of their playlist to a restaurant in Lucerne. The starting point is always the University of Lucerne and the route is calculated via walking.
+
+For this, Spotify API, Google Places API and Google Directions API are used.
+
+
+
+## Initialisation
+
+From the user end, the user needs to create a Spotify app on <https://developer.spotify.com/> and have their "Client ID" and "Client secret" ready.
+Furthermore, their Spotify User ID will also be needed.
+
+For Google API, get an API key from <https://developers.google.com/maps/>. 
+Kindly consult the documentations for more precise information.
+
+The scripts ask for the keys password-style, however, it is recommended to create a "keys.csv" file in the "data" folder to store these keys for the shiny application. The format is the following:
+
+api_id            | api_key
+
+spotify_id        | xxx         #client ID
+
+spotify_secret    | xxx         #client secret
+
+spotify_user      | xxx         #user ID
+
+google_id         | xxx         #Google API key
+
+
+
+### The playlists
+
+After initialisation, the first script ("01_Spotify_playlists.R") is ran and the first important output is the names of playlists scraped.
+
+There are issues with the functions used here. In the package "spotifyr", there are multiple great tools, but the function "get_user_playlists" is limited to 50 playlists, usually displaved as latest addition to oldest. It includes saved playlists from others too.
+
+The goal is to scrape the length of the playlists, saved in seconds. Another issue is, that not all playlists are available for getting their length ( and track list, etc). This could be because of the playlist not being public or being owned by someone else.
+
+```{r eval=FALSE, include=FALSE}
+my_plists$name
+```
+
+### Restaurants
+
+Next, the restaurants from Lucerne are scraped using the Google Places API ("02_Places_API.R").
+
+The issue here is that the API only lets us scrape 20 restaurants at a time. 
+The other issue is that scraping places tagged as restaurants will also scrape other establishments, such as hotels, since usually there are many tags in the 'types' section (like hotels, bars, some gyms, etc). 
+
+```{r eval=FALSE, include=FALSE}
+places
+```
+
+### Routes
+
+Then, the walking routes to each location (restaurant) are scraped via Google Directions API ("03_Directions_API.R"). The same API key can be used for this and script 02. The list og endpoints are given from the scraped table created in script 02.
+
+```{r eval=FALSE, include=FALSE}
+route_info
+```
+
+### Matching
+
+Finally, in script "04_time_match.R", the length of the chosen playlist is matched to the closes restaurant on foot. The user can now take their walk while listening to their favorite songs and top the exercise off with some delicious food at the endpoint.
+
+## Shiny, further applications
+
+The author has tried to create a Shiny application to display their work and make it user-friendly.
+The idea was to:
+
+* load the previously created csv file with the API and username information
+* create a drop-down list with the playlist names
+* this would trigger the matching, which should be shown as a text output
+* a Google Maps widget would show up at the Main section, that shows the route on foot to the restaurant (calculating in the server part of the Shiny app)
+* at a playlist change, a new calculation would happen.
+
+## Limitations
+The main issues have been mentioned already at the relevant sections.
+
+## Personal takeaway
+The project was a good challenge to practice scraping and working with APIs, reading documentations. The author has also used GPT-3.5 for clarifications and code snippets, which was also a new type of application of knowledge for them.
+Shiny applications are extremely handy and versatile, but the more steps are to be displayed with dynamic buttons and inputs, the task gets significantly complicated and it is relatively hard to debug.
+
