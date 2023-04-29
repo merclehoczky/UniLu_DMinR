@@ -16,8 +16,10 @@ start_location <- "University of Lucerne, Switzerland"
 # Define a list of restaurant locations
 restaurant_locations <- places$place_address
 
-# Create an empty list to store the route times
-route_times <- list()
+# Create an empty data frame to store the route information
+route_info <- data.frame(place_address = character(length(restaurant_locations)),
+                         route_time_sec = numeric(length(restaurant_locations)),
+                         stringsAsFactors = FALSE)
 
 # Loop through each restaurant location and make a request to the Directions API
 for (i in seq_along(restaurant_locations)) {
@@ -36,14 +38,13 @@ for (i in seq_along(restaurant_locations)) {
   
   # Convert the response to JSON
   response_json <- fromJSON(content(api_response, "text"), simplifyVector = FALSE)
+
   
-  # Extract the route time in seconds and add it to the list
+  # Extract the route time in seconds and add it to the data frame
   route_time <- response_json$routes[[1]]$legs[[1]]$duration$value
-  route_times[[i]] <- route_time
+  route_info[i, "place_address"] <- destination
+  route_info[i, "route_time_sec"] <- route_time
 }
 
 # Save the route times for each restaurant
-for (i in seq_along(route_times)) {
-  places$route_times_sec[i] <- as.numeric(route_times[[i]])
-}
-
+places$route_times_sec <- as.numeric(route_info$route_time_sec)
