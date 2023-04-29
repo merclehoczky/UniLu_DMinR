@@ -41,8 +41,7 @@ for (i in 1:length(my_plists)) {
 plist <- rstudioapi::askForPassword(prompt = "Please choose your playlist")
 
 # Get the ID of the playlist with the specified name
-playlist_id
-plist
+plist 
 for (i in 1:length(my_plists)) {
   if(plist == my_plists$name[i] ){
     playlist_id <- my_plists$id[i]
