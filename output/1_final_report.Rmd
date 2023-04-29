@@ -14,7 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 This project is the final capstone project for the University of Lucerne FS23 "Data Mining in R" course.
 The purpose of this project was to gain insights into data mining methods and to create an original project using the freshly learned skills.
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0ff186a169fcf16df8d6d58eb62b4ab9b8dbbbab
 ## Idea
 The project is meant to be an idea for a "self-care" walk. 
 The user would access their Spotify account, choose a playlist, and the project matches the length of their playlist to a restaurant in Lucerne. The starting point is always the University of Lucerne and the route is calculated via walking.
@@ -22,6 +25,7 @@ The user would access their Spotify account, choose a playlist, and the project 
 For this, Spotify API, Google Places API and Google Directions API are used.
 
 
+<<<<<<< HEAD
 ##Initialisation
 
 From the user end, the user needs to create a Spotify app on <https://developer.spotify.com/> and have their "Client ID" and "Client secret" ready.
@@ -47,7 +51,7 @@ There are issues with the functions used here. In the package "spotifyr", there 
 
 The goal is to scrape the length of the playlists, saved in seconds. Another issue is, that not all playlists are available for getting their length ( and track list, etc). This could be because of the playlist not being public or being owned by someone else.
 
-```{r}
+```{r echo=FALSE}
 my_plists$name
 ```
 
@@ -58,7 +62,7 @@ Next, the restaurants from Lucerne are scraped using the Google Places API ("02_
 The issue here is that the API only lets us scrape 20 restaurants at a time. 
 The other issue is that scraping places tagged as restaurants will also scrape other establishments, such as hotels, since usually there are many tags in the 'types' section (like hotels, bars, some gyms, etc). 
 
-```{r}
+```{r echo=FALSE}
 places
 ```
 
@@ -66,7 +70,7 @@ places
 
 Then, the walking routes to each location (restaurant) are scraped via Google Directions API ("03_Directions_API.R"). The same API key can be used for this and script 02. The list og endpoints are given from the scraped table created in script 02.
 
-```{r}
+```{r echo=FALSE}
 route_info
 ```
 
@@ -90,3 +94,4 @@ The main issues have been mentioned already at the relevant sections.
 ## Personal takeaway
 The project was a good challenge to practice scraping and working with APIs, reading documentations. The author has also used GPT-3.5 for clarifications and code snippets, which was also a new type of application of knowledge for them.
 Shiny applications are extremely handy and versatile, but the more steps are to be displayed with dynamic buttons and inputs, the task gets significantly complicated and it is relatively hard to debug.
+
