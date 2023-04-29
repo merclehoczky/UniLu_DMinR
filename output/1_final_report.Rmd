@@ -43,23 +43,32 @@ google_id         | xxx         #Google API key
 
 After initialisation, the first script ("01_Spotify_playlists.R") is ran and the first important output is the names of playlists scraped.
 
-There are issues with the functions used here. In the package "spotifyr", there are multiple great tools, but the function "get_user_playlists" is limited to 50 playlists, usually displaved as youngest release to oldest.
+There are issues with the functions used here. In the package "spotifyr", there are multiple great tools, but the function "get_user_playlists" is limited to 50 playlists, usually displaved as latest addition to oldest. It includes saved playlists from others too.
 
-Another issue is, that not all playlists are available for scraping their length. This could be because of the playlist not being public or being owned by someone else.
+The goal is to scrape the length of the playlists, saved in seconds. Another issue is, that not all playlists are available for getting their length ( and track list, etc). This could be because of the playlist not being public or being owned by someone else.
 
 ```{r}
-print(my_plists$name)
+my_plists$name
 ```
 
 ## Restaurants
 
-Next, the restaurants from Lucerne are scraped using the Google Places API.
+Next, the restaurants from Lucerne are scraped using the Google Places API ("02_Places_API.R").
 
 The issue here is that the API only lets us scrape 20 restaurants at a time. 
-The other issue is that scraping places tagged as restaurants will also scrape other establishments, such as hotels, since usually there are many tags in the 'types' section. 
+The other issue is that scraping places tagged as restaurants will also scrape other establishments, such as hotels, since usually there are many tags in the 'types' section (like hotels, bars, some gyms, etc). 
 
 ```{r}
 places
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Routes
+
+Then, the walking routes to each location (restaurant) are scraped via Google Directions API ("03_Directions_API.R"). The same API key can be used for this and script 02. The list og endpoints are given from the scraped table created in script 02.
+
+```{r}
+route_info
+```
+
+
+
