@@ -70,5 +70,7 @@ Then, the walking routes to each location (restaurant) are scraped via Google Di
 route_info
 ```
 
+## Matching
 
+Finally, in script "04_time_match.R", the length of the chosen playlist is matched to the closes restaurant on foot. The user can now take their walk while listening to their favorite songs and top the exercise off with some delicious food at the endpoint.
 
