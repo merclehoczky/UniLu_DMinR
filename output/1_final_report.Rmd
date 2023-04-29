@@ -1,0 +1,36 @@
+---
+title: "Walk_aurant_ify"
+author: "MercedeszLehoczky"
+date: "2023-04-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This project is the final capstone project for the University of Lucerne FS23 "Data Mining in R" course.
+The purpose of this project was to gain insights into data mining methods and to create an original project using the freshly learned skills.
+
+## Idea
+The project is meant to be an idea for a "self-care" walk. 
+The user would access their Spotify account, choose a playlist, and the project matches the length of their playlist to a restaurant in Lucerne. The starting point is always the University of Lucerne and the route is calculated via walking.
+
+For this, Spotify API, Google Places API and Google Directions API are used.
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
