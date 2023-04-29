@@ -39,7 +39,7 @@ google_id         | xxx         #Google API key
 
 
 
-### Let's see the playlists
+### The playlists
 
 After initialisation, the first script ("01_Spotify_playlists.R") is ran and the first important output is the names of playlists scraped.
 
@@ -51,7 +51,7 @@ The goal is to scrape the length of the playlists, saved in seconds. Another iss
 my_plists$name
 ```
 
-## Restaurants
+### Restaurants
 
 Next, the restaurants from Lucerne are scraped using the Google Places API ("02_Places_API.R").
 
@@ -62,7 +62,7 @@ The other issue is that scraping places tagged as restaurants will also scrape o
 places
 ```
 
-## Routes
+### Routes
 
 Then, the walking routes to each location (restaurant) are scraped via Google Directions API ("03_Directions_API.R"). The same API key can be used for this and script 02. The list og endpoints are given from the scraped table created in script 02.
 
@@ -70,7 +70,23 @@ Then, the walking routes to each location (restaurant) are scraped via Google Di
 route_info
 ```
 
-## Matching
+### Matching
 
 Finally, in script "04_time_match.R", the length of the chosen playlist is matched to the closes restaurant on foot. The user can now take their walk while listening to their favorite songs and top the exercise off with some delicious food at the endpoint.
 
+## Shiny, further applications
+
+The author has tried to create a Shiny application to display their work and make it user-friendly.
+The idea was to 
+  * load the previously created csv file with the API and username information
+  * create a drop-down list with the playlist names
+  * this would trigger the matching, which should be shown as a text output
+  * a Google Maps widget would show up at the Main section, that shows the route on foot to the restaurant (calculating in the server part of the Shiny app)
+  * at a playlist change, a new calculation would happen.
+
+## Limitations
+The main issues have been mentioned already at the relevant sections.
+
+## Personal takeaway
+The project was a good challenge to practice scraping and working with APIs, reading documentations. The author has also used GPT-3.5 for clarifications and code snippets, which was also a new type of application of knowledge for them.
+Shiny applications are extremely handy and versatile, but the more steps are to be displayed with dynamic buttons and inputs, the task gets significantly complicated and it is relatively hard to debug.
