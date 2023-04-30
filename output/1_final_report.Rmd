@@ -1,6 +1,6 @@
 ---
 title: "Walk_aurant_ify"
-author: "MercedeszLehoczky"
+author: "Mercédesz Lehoczky"
 date: "2023-04-28"
 output: html_document
 ---
@@ -67,16 +67,137 @@ Next, the restaurants from Lucerne are scraped using the Google Places API (**"0
 The issue here is that the API only lets us scrape 60 restaurants at a time. 
 The other issue is that scraping places tagged as restaurants will also scrape other establishments, such as hotels, since usually there are many tags in the 'types' section (like hotels, bars, gyms, etc). 
 
-```{r eval=FALSE, include=FALSE}
-print(data.frame(places_df$place_name, places_df$place_address))
+```{r echo=FALSE, results='last',  message=FALSE}
+
+library(httr)
+library(jsonlite)
+library(tidyverse)
+library(here)
+library(knitr)
+
+# Set up Google API key and endpoint URL
+keys <- read_csv(here("data", "keys.csv")) %>% 
+  data.frame()
+api_key <- keys$api_key[4]
+Sys.setenv(GU_API_KEY = api_key) 
+
+
+# Define API endpoint and API key
+api_endpoint <- "https://maps.googleapis.com/maps/api/place/textsearch/json"
+
+# Define the search query
+search_query <- "restaurants in Lucerne"
+
+# Initialize empty list to hold results
+results <- list()
+
+# Make the initial API request
+query_url <- paste0(api_endpoint,
+                    "?query=", URLencode(search_query),
+                    "&type=restaurant",
+                    "&key=", api_key)
+api_response <- GET(query_url)
+
+# Convert the response to JSON
+response_json <- fromJSON(content(api_response, "text"), simplifyVector = FALSE)
+
+# Add results to list
+results <- response_json$results
+
+
+# Check if there are more results
+while (length(response_json$next_page_token) > 0) {
+  # Wait for a few seconds before making the next request
+  Sys.sleep(5)
+  
+  # Make the next API request with the next_page_token
+  query_url <- paste0(api_endpoint,
+                      "?pagetoken=", response_json$next_page_token,
+                      "&key=", api_key)
+  api_response <- GET(query_url)
+  
+  # Convert the response to JSON
+  response_json <- fromJSON(content(api_response, "text"), simplifyVector = FALSE)
+  
+  # Add the results to the list
+  results <- c(results, response_json$results)
+}
+
+# Convert the list to a data frame
+places_df <- data.frame(place_name = sapply(results, function(x) x$name),
+                        place_address = sapply(results, function(x) x$formatted_address),
+                        place_id = sapply(results, function(x) x$place_id),
+                        lat = sapply(results, function(x) x$geometry$location$lat),
+                        lng = sapply(results, function(x) x$geometry$location$lng),
+                        open_now = sapply(results, function(x) ifelse(is.null(x$opening_hours), NA, x$opening_hours$open_now)),
+                        stringsAsFactors = FALSE)
+
+
+# Print the data frame
+place <- tibble(Name = places_df$place_name, Address = places_df$place_address)
+kable(place, n = nrow(place))
+
 ```
 
 ### Routes
 
 Then, the walking routes to each location (restaurant) are scraped via Google Directions API (**"03_Directions_API.R"**). The same API key can be used for this and *script 02*. The list of endpoints are given from the scraped table created in *script 02*.
 
-```{r eval=FALSE, include=FALSE}
-print(route_info)
+```{r echo=FALSE, results='last',  message=FALSE}
+
+# Define API endpoint and API key
+api_endpoint <- "https://maps.googleapis.com/maps/api/directions/json"
+
+# Define the start location
+start_location <- "University of Lucerne, Switzerland"
+
+# Define a list of restaurant locations
+restaurant_locations <- places_df$place_address
+
+# Create an empty data frame to store the route information
+route_info <- data.frame(place_name = character(length(restaurant_locations)),
+                         place_address = character(length(restaurant_locations)),
+                         route_time_sec = numeric(length(restaurant_locations)),
+                         stringsAsFactors = FALSE)
+
+# Loop through each restaurant location and make a request to the Directions API
+for (i in seq_along(restaurant_locations)) {
+  # Define the destination
+  destination <- restaurant_locations[i]
+  
+  # Build the API query URL
+  query_url <- paste0(api_endpoint,
+                      "?origin=", URLencode(start_location),
+                      "&destination=", URLencode(destination),
+                      "&mode=walking",
+                      "&key=", api_key)
+  
+  # Make the API request
+  api_response <- GET(query_url)
+  
+  # Convert the response to JSON
+  response_json <- fromJSON(content(api_response, "text"), simplifyVector = FALSE)
+
+  
+  # Extract the route time in seconds and add it to the data frame
+  route_time <- response_json$routes[[1]]$legs[[1]]$duration$value
+  route_info[i, "place_name"] <- places_df$place_name[i]
+  route_info[i, "place_address"] <- destination
+  route_info[i, "route_time_sec"] <- route_time
+}
+
+# Save the route times for each restaurant
+places_df$route_times_sec <- as.numeric(route_info$route_time_sec)
+
+# Show restaurant names and distances
+route <- tibble(Name = route_info$place_name, Address = route_info$place_address, "Time (mm:ss)" = route_info$route_time_sec)
+#Change distance into min:sec
+for (i in seq_along(route)) {
+  route$"Time (mm:ss)" <- sprintf("%02d:%02d", floor(route_info$route_time_sec/60), route_info$route_time_sec %% 60)
+}
+route_sorted <- arrange(route, `Time (mm:ss)`)  
+kable(route_sorted, n = nrow(route))
+
 ```
 
 ### Matching
