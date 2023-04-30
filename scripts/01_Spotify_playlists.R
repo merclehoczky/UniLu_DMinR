@@ -59,6 +59,7 @@ playlist_tracks <- tryCatch(
   }
 )
 
+# Get the length of the playlists when the track info is available
 if (!is.null(playlist_tracks)) {
   # Get the length of the playlists
   playlist_length_sec <- sum(playlist_tracks$track.duration_ms)/1000
