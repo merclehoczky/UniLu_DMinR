@@ -377,9 +377,11 @@ are used.</p>
 <h2>Initialisation</h2>
 <p>From the user end, the user needs to create a Spotify app on <a href="https://developer.spotify.com/" class="uri">https://developer.spotify.com/</a> and have their “Client
 ID” and “Client secret” ready. Furthermore, their Spotify User ID will
-also be needed.</p>
-<p>For Google API, get an API key from <a href="https://developers.google.com/maps/" class="uri">https://developers.google.com/maps/</a>. Kindly consult the
-documentations for more precise information.</p>
+also be needed. This can be found in the application Home &gt; Settings
+&gt; Account &gt; Username or on <a href="https://open.spotify.com" class="uri">https://open.spotify.com</a> Display name (upper right
+corner) &gt; Account &gt; Username.</p>
+<p>For Google API, get an API key from <a href="https://developers.google.com/maps/" class="uri">https://developers.google.com/maps/</a>.</p>
+<p>Kindly consult the documentations for more precise information.</p>
 <p>The scripts ask for the keys password-style, however, it is
 recommended to create a “keys.csv” file in the “data” folder to store
 these keys for the shiny application. The format is the following:</p>
@@ -390,42 +392,51 @@ these keys for the shiny application. The format is the following:</p>
 <p>google_id | xxx #Google API key</p>
 <div id="the-playlists" class="section level3">
 <h3>The playlists</h3>
-<p>After initialisation, the first script (“01_Spotify_playlists.R”) is
-ran and the first important output is the names of playlists
-scraped.</p>
+<p>After setting up the credentials, the first script
+(<strong>“01_Spotify_playlists.R”</strong>) is ran and the first
+important output is the names of playlists scraped.</p>
 <p>There are issues with the functions used here. In the package
 “spotifyr”, there are multiple great tools, but the function
-“get_user_playlists” is limited to 50 playlists, usually displaved as
-latest addition to oldest. It includes saved playlists from others
-too.</p>
+“get_user_playlists” is limited to maximum 50 playlists. The playlists
+are usually displaved as latest addition to oldest and include saved
+playlists from others too.</p>
 <p>The goal is to scrape the length of the playlists, saved in seconds.
 Another issue is, that not all playlists are available for getting their
-length ( and track list, etc). This could be because of the playlist not
-being public or being owned by someone else.</p>
+track list, and hence, the length of the tracks (and playlist). This
+could be because of the playlist not being public or being owned by
+someone else. This will produce 404 errors while running the script, but
+most playlist data should still be available.</p>
+<p>If the user cannot scrape their playlist info, then the user should
+create a new public playlist, (ideally under 60 min, but the script
+won’t check this) and after rerunning the script, proceed to the <em>Get
+specific playlist info</em> section, where the user will be asked to
+type their playlist name in the pop-up window.</p>
 </div>
 <div id="restaurants" class="section level3">
 <h3>Restaurants</h3>
 <p>Next, the restaurants from Lucerne are scraped using the Google
-Places API (“02_Places_API.R”).</p>
-<p>The issue here is that the API only lets us scrape 20 restaurants at
+Places API (<strong>“02_Places_API.R”</strong>).</p>
+<p>The issue here is that the API only lets us scrape 60 restaurants at
 a time. The other issue is that scraping places tagged as restaurants
 will also scrape other establishments, such as hotels, since usually
-there are many tags in the ‘types’ section (like hotels, bars, some
-gyms, etc).</p>
+there are many tags in the ‘types’ section (like hotels, bars, gyms,
+etc).</p>
 </div>
 <div id="routes" class="section level3">
 <h3>Routes</h3>
 <p>Then, the walking routes to each location (restaurant) are scraped
-via Google Directions API (“03_Directions_API.R”). The same API key can
-be used for this and script 02. The list og endpoints are given from the
-scraped table created in script 02.</p>
+via Google Directions API (<strong>“03_Directions_API.R”</strong>). The
+same API key can be used for this and <em>script 02</em>. The list of
+endpoints are given from the scraped table created in <em>script
+02</em>.</p>
 </div>
 <div id="matching" class="section level3">
 <h3>Matching</h3>
-<p>Finally, in script “04_time_match.R”, the length of the chosen
-playlist is matched to the closes restaurant on foot. The user can now
-take their walk while listening to their favorite songs and top the
-exercise off with some delicious food at the endpoint.</p>
+<p>Finally, in script <strong>“04_time_match.R”</strong>, the length of
+the chosen playlist is matched to the closest restaurant on foot.</p>
+<p>The user can now take their walk while listening to their favorite
+songs and top the exercise off with some delicious food at the
+endpoint.</p>
 </div>
 </div>
 <div id="shiny-further-applications" class="section level2">
@@ -448,16 +459,18 @@ the Shiny app)</li>
 <h2>Limitations</h2>
 <p>The main issues have been mentioned already at the relevant
 sections.</p>
+<p>The Shiny application backend is almost complete, but the author
+couldn’t figure out how to make the reactive functions work.</p>
 </div>
 <div id="personal-takeaway" class="section level2">
 <h2>Personal takeaway</h2>
 <p>The project was a good challenge to practice scraping and working
 with APIs, reading documentations. The author has also used GPT-3.5 for
 clarifications and code snippets, which was also a new type of
-application of knowledge for them. Shiny applications are extremely
-handy and versatile, but the more steps are to be displayed with dynamic
-buttons and inputs, the task gets significantly complicated and it is
-relatively hard to debug.</p>
+application of knowledge for them.</p>
+<p>Shiny applications are extremely handy and versatile, but the more
+steps are to be displayed with dynamic buttons and inputs, the task gets
+significantly complicated and it is relatively hard to debug.</p>
 </div>
 </div>
 
