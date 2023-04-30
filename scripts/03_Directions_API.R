@@ -13,7 +13,7 @@ api_endpoint <- "https://maps.googleapis.com/maps/api/directions/json"
 start_location <- "University of Lucerne, Switzerland"
 
 # Define a list of restaurant locations
-restaurant_locations <- places$place_address
+restaurant_locations <- places_df$place_address
 
 # Create an empty data frame to store the route information
 route_info <- data.frame(place_address = character(length(restaurant_locations)),
@@ -46,4 +46,4 @@ for (i in seq_along(restaurant_locations)) {
 }
 
 # Save the route times for each restaurant
-places$route_times_sec <- as.numeric(route_info$route_time_sec)
+places_df$route_times_sec <- as.numeric(route_info$route_time_sec)
