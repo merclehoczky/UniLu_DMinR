@@ -6,43 +6,56 @@ api_key <- rstudioapi::askForPassword()
 Sys.setenv(GU_API_KEY = api_key) 
 
 
-# Set up parameters for the API request
-location <- "47.050168,8.309307"  # Coordinates for Lucerne
-radius <- 5000  # Search radius in meters
-types <- "restaurant"  # Restrict results to restaurants
-next_page_token <- ""
+# Define API endpoint and API key
+api_endpoint <- "https://maps.googleapis.com/maps/api/place/textsearch/json"
+
+# Define the search query
+search_query <- "restaurants in Lucerne"
 
 # Initialize empty list to hold results
 results <- list()
 
-# Construct API request URL
-url <- sprintf("https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=%s&location=%s&radius=%d&types=%s&pagetoken=%s",
-               api_key, 
-               location, 
-               radius, 
-               types,  
-               next_page_token
-)
+# Make the initial API request
+query_url <- paste0(api_endpoint,
+                    "?query=", URLencode(search_query),
+                    "&type=restaurant",
+                    "&key=", api_key)
+api_response <- GET(query_url)
 
-# Send GET request to API
-response <- GET(url)
-
-# Parse JSON response
-content <- content(response, as = "text", encoding = "UTF-8")
-data <- fromJSON(content, flatten = TRUE)
+# Convert the response to JSON
+response_json <- fromJSON(content(api_response, "text"), simplifyVector = FALSE)
 
 # Add results to list
-results <- c(results, data$results)
-
-# Save Place names, IDs, lat, lng, address, open_now details for route request
-place_name <- c(results[["name"]])
-place_ids <- c(results[["place_id"]])
-place_lat <- c(results[["geometry.location.lat"]])
-place_lng <- c(results[["geometry.location.lng"]])
-place_address <- c(results[["vicinity"]])
-place_open_now <- c(results[["opening_hours.open_now"]])
-
-# Create dataframe with places details
-places <- data.frame(place_name, place_ids, place_lat, place_lng, place_address, place_open_now)
+results <- response_json$results
 
 
+# Check if there are more results
+while (length(response_json$next_page_token) > 0) {
+  # Wait for a few seconds before making the next request
+  Sys.sleep(5)
+  
+  # Make the next API request with the next_page_token
+  query_url <- paste0(api_endpoint,
+                      "?pagetoken=", response_json$next_page_token,
+                      "&key=", api_key)
+  api_response <- GET(query_url)
+  
+  # Convert the response to JSON
+  response_json <- fromJSON(content(api_response, "text"), simplifyVector = FALSE)
+  
+  # Add the results to the list
+  results <- c(results, response_json$results)
+}
+
+# Convert the list to a data frame
+places_df <- data.frame(place_name = sapply(results, function(x) x$name),
+                        place_address = sapply(results, function(x) x$formatted_address),
+                        place_id = sapply(results, function(x) x$place_id),
+                        lat = sapply(results, function(x) x$geometry$location$lat),
+                        lng = sapply(results, function(x) x$geometry$location$lng),
+                        open_now = sapply(results, function(x) ifelse(is.null(x$opening_hours), NA, x$opening_hours$open_now)),
+                        stringsAsFactors = FALSE)
+
+
+# Print the data frame
+print(places_df)
