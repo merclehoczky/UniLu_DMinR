@@ -37,6 +37,8 @@ for (i in 1:length(my_plists)) {
   })
 }
 
+
+# Get specific playlist info
 # Enter playlist name
 plist <- rstudioapi::askForPassword(prompt = "Please choose your playlist")
 
@@ -66,6 +68,13 @@ if (!is.null(playlist_tracks)) {
 
   #Save value mm:ss time format
   pl_length_in_minsec <- format( as.POSIXct(Sys.Date())+playlist_length_sec/1000, "%M:%S")
+  
+  #Save into dataframe
+  for (i in 1:length(my_plists)) {
+    if(plist == my_plists$name[i] ){
+      my_plists$playlist_length_sec[i] <- playlist_length_sec
+    }
+  }
 } else {
   print("Not available")
   
