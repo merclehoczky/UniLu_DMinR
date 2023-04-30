@@ -12,4 +12,5 @@ closest_val <- route_info$route_time_sec[idx]
 placename <- route_info$place_name[idx]
 
 # Print the result
-print(c(closest_val, placename))
+cat("The restaurant is", placename, "and the estimated time is",
+    (sprintf("%02d:%02d", floor(closest_val/60), closest_val %% 60)), "(mm:ss).")
