@@ -48,7 +48,7 @@ while (length(response_json$next_page_token) > 0) {
 }
 
 # Convert the list to a data frame
-places_df <- data.frame(place_name = sapply(results, function(x) x$name),
+places <- data.frame(place_name = sapply(results, function(x) x$name),
                         place_address = sapply(results, function(x) x$formatted_address),
                         place_id = sapply(results, function(x) x$place_id),
                         lat = sapply(results, function(x) x$geometry$location$lat),
@@ -58,4 +58,4 @@ places_df <- data.frame(place_name = sapply(results, function(x) x$name),
 
 
 # Print the data frame
-print(places_df)
+print(places)
